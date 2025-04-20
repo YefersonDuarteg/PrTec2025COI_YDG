@@ -1,0 +1,155 @@
+﻿@using System.IO
+@using Microsoft.AspNetCore.Components.Forms
+@inject ProductoService Repository
+@inject IJSRuntime JSRuntime
+
+<div>
+    <h5> Capturar Imagen</h5>
+    @if (mostrarInputFile)
+    {
+        <InputFile OnChange="HandleFileSelected" multiple />
+    }
+    <div class="mt-3">
+        @if (imagenesPreview.Any())
+        {
+            <div class="d-flex flex-wrap">
+                @foreach (var imagen in imagenesPreview)
+                {
+                    <div class="m-2 text-center">
+                        <img src="@imagen.Url" alt="Preview" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                        <div class="mt-2">
+                            @if(@imagenesPreview.Any()){
+                                <button class="btn btn-warning btn-sm me-1" @onclick="() => EditarImagen(imagen.Id)">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm" @onclick="() => EliminarImagen(imagen.Id)">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No se han seleccionado imágenes.</p>
+        }
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-success me-2" @onclick="GuardarImagenes">
+            <i class="fas fa-save"></i> Guardar
+        </button>
+        <button class="btn btn-secondary" @onclick="Cancelar">
+            <i class="fas fa-times"></i> Cancelar
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int ProductoId { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private List<ImagenProductoPreview> imagenesPreview = new();
+    private List<IBrowserFile> imagenesSeleccionadas = new();
+    private bool mostrarInputFile = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarImagenesExistentes();
+    }
+
+    private async Task CargarImagenesExistentes()
+    {
+        var url = $"api/imagenes/producto/{ProductoId}";
+        var imagenes = await Repository.ObtenerImagenes(url);
+        if (imagenes != null)
+        {
+            imagenesPreview = imagenes.Select(i => new ImagenProductoPreview
+                {
+                    Id = i.Id,
+                    Url = $"data:image/jpeg;base64,{i.UrlImagen}"
+                }).ToList();
+        }
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        imagenesSeleccionadas = e.GetMultipleFiles().ToList();
+        imagenesPreview.Clear();
+
+        foreach (var file in imagenesSeleccionadas)
+        {
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            var base64 = Convert.ToBase64String(buffer);
+            imagenesPreview.Add(new ImagenProductoPreview
+                {
+                    Id = 0, // Nueva imagen, sin ID
+                    Url = $"data:{file.ContentType};base64,{base64}"
+                });
+        }
+    }
+
+    private async Task GuardarImagenes()
+    {
+        foreach (var file in imagenesSeleccionadas)
+        {
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+
+            var imagen = new ImagenProducto
+                {
+                    UrlImagen = Convert.ToBase64String(buffer),
+                    ProductoId = ProductoId
+                };
+
+            await Repository.AgregarImagen("api/imagenes", imagen);
+        }
+        await CargarImagenesExistentes();
+
+        // Limpiar el estado del InputFile
+        imagenesSeleccionadas.Clear();
+        mostrarInputFile = false; 
+        StateHasChanged();
+        await Task.Delay(1);
+        mostrarInputFile = true;
+        StateHasChanged();
+
+        // await OnClose.InvokeAsync();
+    }
+
+    private async Task EliminarImagen(int id)
+    {
+        var confirm = await JSRuntime.InvokeAsync<bool>("showConfirmationDialog", "¿Estás seguro de que deseas eliminar esta imagen?");
+        if (confirm)
+        {
+            var url = $"api/imagenes/{id}";
+            await Repository.EliminarImagen(url);
+            await CargarImagenesExistentes();
+        }
+    }
+
+    private async Task EditarImagen(int id)
+    {
+        var imagenAEditar = imagenesPreview.FirstOrDefault(i => i.Id == id);
+        if (imagenAEditar != null)
+        {
+            
+            
+        }
+    }
+
+    private async Task Cancelar()
+    {
+        imagenesPreview.Clear();
+        imagenesSeleccionadas.Clear();
+        await OnClose.InvokeAsync();
+    }
+
+    private class ImagenProductoPreview
+    {
+        public int Id { get; set; }
+        public string Url { get; set; }
+    }
+}

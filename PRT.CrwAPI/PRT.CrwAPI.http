@@ -1,0 +1,6 @@
+@PRT.CrwAPI_HostAddress = http://localhost:5213
+
+GET {{PRT.CrwAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
