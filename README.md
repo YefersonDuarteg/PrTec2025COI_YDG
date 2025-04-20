@@ -5,9 +5,10 @@
 - **Base de datos**: SQL Server (u otro sistema especificado).
 
 ## Configuración inicial
-1. Clona el repositorio: git clone https://github.com/usuario/proyecto-prt.git cd proyecto-prt
+1. Clona el repositorio: git clone https://github.com/YefersonDuarteg/PrTec2025COI_YDG.git
 
 2. Restaura las dependencias:
+Des de la terminal nos ubicamos en el proyecto PRt.CrwAPI y ejecutamos el siguiente comando (cd PRt.CrwAPI): dotnet restore
 
 3. Configura la cadena de conexión en el archivo `appsettings.json`: "ConnectionStrings": { "DefaultConnection": "Server=TU_SERVIDOR;Database=TU_BASE_DE_DATOS;User Id=USUARIO;Password=CONTRASEÑA;" }
 
@@ -15,16 +16,16 @@
 
 **Nota**: Asegúrate de que `dotnet-ef` esté instalado globalmente. Si no lo tienes, instálalo con: 
 
-5. Ejecuta el script de base de datos adicional (si aplica) desde el archivo `Database/Script.sql`.
+5. Ejecuta el script de base de datos adicional (si aplica) desde el archivo `DocDatabase/BD_Script_PruebaTecnica`.
 
 ## Ejecución del proyecto
-Ejecuta la solución (Esta confugurada para que corra el proeyecto front y bakend al mismo tiempo)
+Ejecuta la solución (Esta confugurada para que corra el proeyecto frontend y bakend al mismo tiempo)
 
-Tambien se puede ejecutar los proyectos por separado:
+Tambien se puede ejecutar los proyectos por separado, esto desde la raiz de la solución:
 - **Backend**: Navega a la carpeta del backend y ejecuta `cd PRT.CrwAPI dotnet run`.
 - **Frontend**: Navega a la carpeta del frontend y ejecuta `cd PRT.UIBlz dotnet run`.
 
-3. Accede a la aplicación en tu navegador en `http://localhost:`.
+3. Accede a la aplicación en tu navegador en `https://localhost:7290/`.
 
 ## Estructura del proyecto
 - **PRT.CrwAPI**: Contiene la API REST para gestionar productos e imágenes.
