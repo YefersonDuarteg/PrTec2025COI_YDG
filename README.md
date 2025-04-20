@@ -2,7 +2,7 @@
 
 ## Requisitos previos
 - **SDK .NET 8**: Asegúrate de tener instalado el SDK de .NET 8. Puedes descargarlo desde [aquí](https://dotnet.microsoft.com/download).
-- **Base de datos**: SQL Server (u otro sistema especificado).
+- **Base de datos**: SQL Server.
 
 ## Configuración inicial
 1. Clona el repositorio: git clone https://github.com/YefersonDuarteg/PrTec2025COI_YDG.git
@@ -10,7 +10,7 @@
 2. Restaura las dependencias:
 Des de la terminal nos ubicamos en el proyecto PRt.CrwAPI y ejecutamos el siguiente comando (cd PRt.CrwAPI): dotnet restore
 
-3. Configura la cadena de conexión en el archivo `appsettings.json`: "ConnectionStrings": { "DefaultConnection": "Server=TU_SERVIDOR;Database=TU_BASE_DE_DATOS;User Id=USUARIO;Password=CONTRASEÑA;" }
+3. Configura la cadena de conexión en el archivo `appsettings.json`: Server=TU_SERVIDOR;Database=COIPrtBd;Trusted_Connection=True;TrustServerCertificate=True; }
 
 4. Aplica las migraciones para crear la base de datos: cd PRT.CrwAPI dotnet ef database update
 
