@@ -10,7 +10,7 @@
 2. Restaura las dependencias:
 Des de la terminal nos ubicamos en el proyecto PRt.CrwAPI y ejecutamos el siguiente comando (cd PRt.CrwAPI): dotnet restore
 
-3. Configura la cadena de conexión en el archivo `appsettings.json`: Server=TU_SERVIDOR;Database=COIPrtBd;Trusted_Connection=True;TrustServerCertificate=True; }
+3. Configura la cadena de conexión en el archivo `appsettings.json`: {"DataBaseConnection": "Server=TU_SERVIDOR;Database=COIPrtBd;Trusted_Connection=True;TrustServerCertificate=True; }
 
 4. Aplica las migraciones para crear la base de datos: cd PRT.CrwAPI dotnet ef database update
 
